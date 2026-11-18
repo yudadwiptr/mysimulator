@@ -55,10 +55,10 @@
     kiosk: { b: 30, r: 22, sr: 6, sb: 0 },
   };
   const MOBILE = new Set(['island', 'notch', 'home', 'punch', 'fold']);
-  const SUGGEST = ['iphone-17-pro', 'galaxy-s25-ultra', 'ipad-air-11', 'pixel-10-pro', 'macbook-air-13', 'iphone-se'];
+  const SUGGEST = ['iphone-18-pro', 'galaxy-s26-ultra', 'iphone-duo-open', 'pixel-11-pro', 'ipad-air-11', 'macbook-air-13'];
 
   const DEFAULTS = {
-    slots: [{ uid: 's1', id: 'iphone-17-pro', land: false }],
+    slots: [{ uid: 's1', id: 'iphone-18-pro', land: false }],
     active: 's1',
     theme: 'dark',
     accent: 'iris',
@@ -150,23 +150,13 @@
   root.innerHTML = `
     <div class="backdrop"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
     <main class="stage"><div class="rail"></div></main>
-    <header class="topbar">
-      <div class="brand gl">${IC.logo}<span>MY Simulator</span><em>Responsive</em></div>
-      <form class="omni gl" autocomplete="off">
-        <span class="lead">${IC.globe}</span>
-        <input name="url" spellcheck="false" placeholder="Enter a URL or search…" aria-label="Address" />
-        <button type="button" class="ib" data-act="reload-all" title="Reload all devices">${IC.reload}</button>
-        <button type="button" class="ib" data-act="open-tab" title="Open in new tab">${IC.external}</button>
-      </form>
-      <button class="meta gl" data-act="zoom" data-pop="zoom"></button>
-    </header>
     <nav class="dock gl" aria-label="Studio tools">
       <button class="db close" data-act="close" data-tip="Close · Esc">${IC.close}</button>
       <hr>
       <button class="db" data-act="devices" data-pop="devices" data-tip="Devices · D">${IC.devices}</button>
       <button class="db" data-act="add" data-tip="Add device · A">${IC.plus}</button>
       <button class="db" data-act="rotate" data-tip="Rotate · R">${IC.rotate}</button>
-      <button class="db" data-act="zoom" data-pop="zoom" data-tip="Zoom · Z">${IC.zoom}</button>
+      <button class="db" data-act="zoom" data-pop="zoom" data-tip="Zoom · Z">${IC.zoom}<span class="zbadge"></span></button>
       <hr>
       <button class="db" data-act="shot" data-tip="Screenshot · S">${IC.camera}</button>
       <button class="db" data-act="sync" data-tip="Sync navigation">${IC.link}<i class="pip"></i></button>
@@ -185,9 +175,6 @@
   const dock = $('.dock');
   const pops = $('.pops');
   const toasts = $('.toasts');
-  const omni = $('.omni');
-  const omniInput = $('.omni input');
-  const meta = $('.meta');
 
   // ---------- look ----------
   const mq = matchMedia('(prefers-color-scheme: dark)');
@@ -288,11 +275,13 @@
     if (d.frame === 'island' || d.frame === 'notch') return 'ios-ear';
     if (d.frame === 'home') return d.ua === 'ios' ? 'ios-home' : 'android';
     if (d.frame === 'tablet') return d.ua === 'ipad' ? 'ipad' : 'android';
+    if (d.frame === 'fold' && d.ua === 'ios') return 'ipad';
     return 'android';
   }
   function homeKind(d) {
     if (d.frame === 'island' || d.frame === 'notch') return 'bar';
     if (d.frame === 'tablet') return d.ua === 'ipad' ? 'bar' : d.ua === 'androidTab' ? 'pill' : 'none';
+    if (d.frame === 'fold' && d.ua === 'ios') return 'bar';
     if (d.frame === 'punch' || d.frame === 'fold') return 'pill';
     return 'none';
   }
@@ -446,7 +435,7 @@
     const H = stage.clientHeight;
     const cap = !!captureUid;
     const padX = cap ? 48 : 40 + 108;
-    const padY = cap ? 48 : 84 + 36 + (S.labels ? 56 : 0);
+    const padY = cap ? 48 : 24 + 32 + (S.labels ? 56 : 0);
     const room = W - padX - (cap ? 0 : 56 * (gs.length - 1));
     const sumW = gs.reduce((a, g) => a + g.ow, 0);
     const maxH = Math.max(...gs.map((g) => g.oh));
@@ -464,7 +453,8 @@
     return clamp(s, 0.08, 1);
   }
 
-  function layout() {
+  // freeze: uid of a slot whose geometry is being animated by hand (rotation)
+  function layout(freeze) {
     const geos = new Map(S.slots.map((s) => [s.uid, geom(dev(s.id), s.land)]));
     for (const s of S.slots) {
       const L = ensureSlot(s);
@@ -487,7 +477,7 @@
     }
     const scale = computeScale(visible.map((s) => geos.get(s.uid)), heads);
     lastScale = scale;
-    for (const s of S.slots) applyGeom(live.get(s.uid), s, geos.get(s.uid), scale);
+    for (const s of S.slots) if (s.uid !== freeze) applyGeom(live.get(s.uid), s, geos.get(s.uid), scale);
     for (const [uid, L] of live) {
       if (!S.slots.some((s) => s.uid === uid)) {
         L.el.remove();
@@ -496,30 +486,48 @@
     }
     updateMeta();
     syncDock();
+    return { scale, geos };
   }
 
   function updateMeta() {
-    const n = S.slots.length;
-    meta.innerHTML = `<b>${n}</b> device${n > 1 ? 's' : ''}<i></i><b>${Math.round(lastScale * 100)}%</b>${S.zoom === 'fit' ? ' fit' : ''}`;
+    const z = $('.zbadge');
+    if (z) z.textContent = Math.round(lastScale * 100) + '%';
+    const btn = $('.dock [data-act="zoom"]');
+    if (btn) btn.dataset.tip = `Zoom ${Math.round(lastScale * 100)}%${S.zoom === 'fit' ? ' (fit)' : ''} · Z`;
   }
 
-  function updateOmni() {
-    const L = live.get(S.active);
-    if (!L) return;
-    if (shadow.activeElement !== omniInput) omniInput.value = L.href;
-    $('.omni .lead').innerHTML = /^https:/.test(L.href) ? IC.lock : IC.globe;
-  }
+  function updateOmni() {}
 
   function updateBack(L) {
     if (L.backBtn) L.backBtn.disabled = L.hist.length < 2;
   }
 
-  function animate(L) {
-    if (!L) return;
-    L.device.classList.remove('turn');
-    void L.device.offsetWidth;
-    L.device.classList.add('turn');
-    setTimeout(() => L.device.classList.remove('turn'), 600);
+  // ---------- motion helpers ----------
+  const EASE = 'cubic-bezier(.65, 0, .35, 1)';
+  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let motionT = 0;
+  // Promote devices to their own compositor layer while they move, then drop it
+  // so Chrome re-rasterises the iframes crisply at the final scale.
+  function motion(ms = 700) {
+    root.classList.add('animating');
+    clearTimeout(motionT);
+    motionT = setTimeout(() => root.classList.remove('animating'), ms);
+  }
+  function settleScreen(L) {
+    if (reduced()) return;
+    L.screen.animate(
+      [{ opacity: 0.35, filter: 'blur(10px) saturate(1.2)' }, { opacity: 1, filter: 'blur(0) saturate(1)' }],
+      { duration: 380, easing: 'cubic-bezier(.2, .8, .2, 1)' }
+    );
+  }
+  // Fade a device out, run the change, fade it back in.
+  async function swapDevice(L, change) {
+    if (!L || reduced()) return change();
+    await L.device.animate([{ opacity: 1, filter: 'blur(0)' }, { opacity: 0, filter: 'blur(6px)' }], { duration: 150, easing: 'ease-in', fill: 'forwards' }).finished;
+    motion();
+    await change();
+    const a = L.device.animate([{ opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blur(0)' }], { duration: 320, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+    L.device.getAnimations().forEach((x) => x !== a && x.cancel());
   }
 
   // ---------- actions ----------
@@ -560,36 +568,76 @@
     if (popName === 'devices') renderPop();
   }
 
+  const rotating = new Set();
   function rotate(uid) {
     const s = S.slots.find((x) => x.uid === uid);
-    if (!s) return;
+    const L = live.get(uid);
+    if (!s || !L || rotating.has(uid)) return;
     const d = dev(s.id);
     if (!canRotate(d)) return toast(`${d.name} doesn't rotate`, 'info');
+
+    const before = geom(d, s.land);
+    const s1 = lastScale;
+    const symmetric = !S.frame || MOBILE.has(d.frame) || d.frame === 'tablet';
     s.land = !s.land;
     save();
-    layout();
-    animate(live.get(uid));
+
+    if (reduced() || !symmetric) {
+      swapDevice(L, () => layout());
+      return;
+    }
+
+    // Physically spin the device 90° around its centre while the slot resizes,
+    // then swap to the landscape layout (which looks identical) and let the page reflow.
+    rotating.add(uid);
+    motion(900);
+    L.el.classList.add('no-tx');
+    const { scale: s2, geos } = layout(uid);
+    const after = geos.get(uid);
+    const P = { w: before.ow * s1, h: before.oh * s1 };
+    const Q = { w: after.ow * s2, h: after.oh * s2 };
+    const deg = s.land ? -90 : 90;
+    const inner = `translate(${-before.ow / 2}px, ${-before.oh / 2}px)`;
+    const opts = { duration: 620, easing: EASE, fill: 'forwards' };
+    const spin = L.device.animate(
+      [
+        { transform: `translate(${P.w / 2}px, ${P.h / 2}px) rotate(0deg) scale(${s1}) ${inner}` },
+        { transform: `translate(${Q.w / 2}px, ${Q.h / 2}px) rotate(${deg}deg) scale(${s2}) ${inner}` },
+      ],
+      opts
+    );
+    const grow = L.holder.animate(
+      [
+        { width: P.w + 'px', height: P.h + 'px' },
+        { width: Q.w + 'px', height: Q.h + 'px' },
+      ],
+      opts
+    );
+    spin.finished
+      .catch(() => {})
+      .then(() => {
+        applyGeom(L, s, after, s2);
+        spin.cancel();
+        grow.cancel();
+        settleScreen(L);
+        requestAnimationFrame(() => L.el.classList.remove('no-tx'));
+        rotating.delete(uid);
+        // fit may have drifted while we animated (e.g. window resize)
+        if (S.zoom === 'fit') layout();
+      });
   }
 
   async function changeDevice(uid, id) {
     const s = S.slots.find((x) => x.uid === uid);
-    if (!s) return;
+    if (!s || s.id === id) return;
     s.id = id;
     if (!canRotate(dev(id))) s.land = false;
     save();
-    await syncHeaderUA();
-    layout();
-    animate(live.get(uid));
     if (popName === 'devices') renderPop();
-  }
-
-  function normalizeUrl(v) {
-    v = v.trim();
-    if (!v) return '';
-    if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return v;
-    if (/^localhost(:\d+)?(\/|$)/i.test(v) || /^\d{1,3}(\.\d{1,3}){3}(:\d+)?/.test(v)) return 'http://' + v;
-    if (!/\s/.test(v) && /\.[a-z]{2,}(:\d+)?(\/|$)/i.test(v)) return 'https://' + v;
-    return 'https://www.google.com/search?q=' + encodeURIComponent(v);
+    await swapDevice(live.get(uid), async () => {
+      await syncHeaderUA();
+      layout();
+    });
   }
 
   function loadInto(L, url) {
@@ -597,12 +645,6 @@
     L.expect = true;
     L.screen.classList.remove('ready');
     L.iframe.src = url;
-  }
-
-  function navigateAll(url) {
-    if (!url) return;
-    for (const L of live.values()) loadInto(L, url);
-    updateOmni();
   }
 
   function reloadSlot(L) {
@@ -634,11 +676,65 @@
   }
   const broadcastConfig = () => live.forEach((L) => post(L, { kind: 'config', touch: S.touch }));
 
-  function update(key, val) {
+  let themingT = 0;
+  // Let every colour in the studio glide to its new value.
+  function smoothColors(fn) {
+    if (reduced()) return fn();
+    root.classList.add('theming');
+    fn();
+    clearTimeout(themingT);
+    themingT = setTimeout(() => root.classList.remove('theming'), 520);
+  }
+
+  let vtSheet = null;
+  // Theme switch: circular reveal from the button that was clicked (View Transitions),
+  // falling back to a colour cross-fade.
+  function switchTheme(next, from) {
+    const commit = () => {
+      S.theme = next;
+      save();
+      applyLook();
+      if (popName === 'settings') renderPop();
+    };
+    if (next === S.theme) return;
+    if (reduced() || typeof document.startViewTransition !== 'function') return smoothColors(commit);
+    const r = (from || $('.dock [data-act="theme"]')).getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    try {
+      if (!vtSheet) {
+        vtSheet = new CSSStyleSheet();
+        vtSheet.replaceSync('::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}');
+      }
+      document.adoptedStyleSheets = [...document.adoptedStyleSheets, vtSheet];
+      const vt = document.startViewTransition(commit);
+      const cleanup = () => {
+        document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== vtSheet);
+      };
+      vt.ready
+        .then(() => {
+          document.documentElement.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+            { duration: 700, easing: 'cubic-bezier(.4, 0, .2, 1)', pseudoElement: '::view-transition-new(root)' }
+          );
+        })
+        .catch(cleanup);
+      vt.finished.then(cleanup, cleanup);
+    } catch (_) {
+      smoothColors(commit);
+    }
+  }
+
+  function update(key, val, from) {
+    if (key === 'theme') return switchTheme(val, from);
     S[key] = val;
     save();
-    if (['theme', 'accent', 'backdrop', 'finish', 'labels'].includes(key)) applyLook();
-    if (key === 'frame' || key === 'labels') layout();
+    if (['accent', 'backdrop', 'finish', 'labels'].includes(key)) smoothColors(applyLook);
+    if (key === 'frame' || key === 'labels') {
+      motion();
+      layout();
+    }
     if (key === 'touch') broadcastConfig();
     if (key === 'syncNav') {
       syncDock();
@@ -650,29 +746,46 @@
   function setZoom(v) {
     S.zoom = v;
     save();
+    motion(800);
     layout();
     if (popName === 'zoom') renderPop();
   }
   const zoomBy = (dir) => setZoom(clamp(Math.round((lastScale + dir * 0.1) * 20) / 20, 0.2, 1.5));
 
-  function toggleTheme() {
-    update('theme', resolvedTheme() === 'dark' ? 'light' : 'dark');
+  function toggleTheme(from) {
+    switchTheme(resolvedTheme() === 'dark' ? 'light' : 'dark', from);
   }
 
   // ---------- screenshot ----------
+  function flash() {
+    if (reduced()) return;
+    const f = document.createElement('div');
+    f.className = 'flash';
+    root.appendChild(f);
+    f.animate([{ opacity: 0 }, { opacity: 0.55, offset: 0.18 }, { opacity: 0 }], { duration: 520, easing: 'ease-out' }).finished.then(() => f.remove());
+  }
+
+  let shooting = false;
   async function screenshot(uid = S.active) {
-    if (!isExt) return toast('Screenshots work in the installed extension', 'info');
     const s = S.slots.find((x) => x.uid === uid);
     const L = live.get(uid);
-    if (!s || !L) return;
+    if (!s || !L || shooting) return;
+    shooting = true;
     const d = dev(s.id);
     closePop();
+    const fade = reduced() ? 0 : 220;
+
+    // 1. fade the studio out, 2. switch to a clean full-size capture layout while invisible,
+    // 3. fade it back in and capture, 4. shutter flash, 5. fade back to the normal studio.
+    root.classList.add('shooting');
+    await wait(fade);
     root.classList.add('capturing');
     captureUid = uid;
     layout();
     await raf();
     await raf();
-    await wait(140);
+    root.classList.remove('shooting');
+    await wait(fade + 160);
     const g = geom(d, s.land);
     const clip = !S.frame || MOBILE.has(d.frame) || d.frame === 'tablet';
     const rect = (clip ? L.body : L.holder).getBoundingClientRect();
@@ -681,10 +794,17 @@
     try {
       res = await send({ type: 'msim:capture' });
     } finally {
+      flash();
+      root.classList.add('shooting');
+      await wait(fade);
       root.classList.remove('capturing');
       captureUid = null;
       layout();
+      await raf();
+      root.classList.remove('shooting');
+      shooting = false;
     }
+    if (!isExt) return toast('Screenshots save in the installed extension', 'info');
     if (!res || !res.dataUrl) return toast('Screenshot failed — try again', 'info');
 
     const img = new Image();
@@ -965,7 +1085,6 @@
       ['Z', 'Zoom panel'],
       ['+ / −', 'Zoom in / out'],
       ['0', 'Fit to window'],
-      ['L', 'Focus address bar'],
       ['T', 'Toggle theme'],
       ['Esc', 'Close panel / studio'],
       ['Alt ⇧ M', 'Open / close studio'],
@@ -999,13 +1118,7 @@
       case 'rotate': return rotate(S.active);
       case 'shot': return screenshot(S.active);
       case 'sync': return update('syncNav', !S.syncNav);
-      case 'theme': return toggleTheme();
-      case 'reload-all': live.forEach(reloadSlot); return toast('Reloaded all devices', 'reload');
-      case 'open-tab': {
-        const cur = live.get(S.active);
-        if (cur) window.open(cur.href, '_blank', 'noopener');
-        return;
-      }
+      case 'theme': return toggleTheme(t);
       case 'slot-pick': return openPop('devices');
       case 'slot-back': return L && goBack(L);
       case 'slot-reload': return L && reloadSlot(L);
@@ -1032,7 +1145,7 @@
       case 'ctype':
         t.parentElement.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b === t));
         return;
-      case 'set': return update(t.dataset.key, t.dataset.val);
+      case 'set': return update(t.dataset.key, t.dataset.val, t);
       case 'toggle': return update(t.dataset.key, !S[t.dataset.key]);
       case 'zoom-set': return setZoom(t.dataset.val === 'fit' ? 'fit' : parseFloat(t.dataset.val));
     }
@@ -1041,10 +1154,7 @@
   root.addEventListener('submit', (e) => {
     e.preventDefault();
     const f = e.target;
-    if (f === omni) {
-      navigateAll(normalizeUrl(omniInput.value));
-      omniInput.blur();
-    } else if (f.classList.contains('cform')) {
+    if (f.classList.contains('cform')) {
       addCustom(f);
     }
   });
@@ -1059,7 +1169,11 @@
       t.style.setProperty('--p', ((v - 20) / 130) * 100 + '%');
       S.zoom = v / 100;
       save();
-      layout();
+      // follow the thumb 1:1 (no easing lag), one layout per frame
+      root.classList.add('scrubbing');
+      motion(400);
+      cancelAnimationFrame(scrubRaf);
+      scrubRaf = requestAnimationFrame(() => layout());
       const zv = $('.zv');
       if (zv) zv.textContent = v + '%';
       const small = $('.zoom-big small');
@@ -1068,7 +1182,14 @@
     }
   });
 
-  omniInput.addEventListener('focus', () => omniInput.select());
+  let scrubRaf = 0;
+  root.addEventListener('change', (e) => {
+    if (e.target.matches('.range')) {
+      root.classList.remove('scrubbing');
+      motion(500);
+    }
+  });
+
 
   function onMsg(e) {
     const d = e.data;
@@ -1138,7 +1259,6 @@
       s: () => screenshot(S.active),
       z: () => togglePop('zoom'),
       t: toggleTheme,
-      l: () => omniInput.focus(),
       '?': () => togglePop('help'),
       '+': () => zoomBy(1),
       '=': () => zoomBy(1),

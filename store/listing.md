@@ -22,7 +22,7 @@ English (primary) · Bahasa Indonesia (add as a second localized listing)
 MY Simulator shows your website on realistic phones, tablets, laptops and TVs — side by side, right inside Chrome. No emulator to install, no account, no tracking.
 
 ★ WHAT YOU GET
-• 56 device presets: iPhone 17 Pro / Pro Max / Air, iPhone 16, iPhone SE, Galaxy S25 Ultra, Galaxy Z Fold7 & Flip7, Pixel 10 Pro, Xiaomi 15, OPPO Reno14, vivo V50, Infinix Hot 50, iPad Pro, iPad mini, Galaxy Tab, MacBook Air & Pro, Full HD & QHD monitors, Smart TV, smartwatch, kiosk
+• 88 device presets: iPhone Duo (folded & unfolded), iPhone 18 Pro / Pro Max, iPhone Air, iPhone SE, Galaxy S26 Ultra, Galaxy Z Fold8 & Flip8, Pixel 11 Pro, Pixel 10 Pro Fold, Xiaomi 17 Ultra, Motorola Razr 70 Ultra, OnePlus 15, Xiaomi 15, OPPO Reno14, vivo V50, Infinix Hot 50, iPad Pro, iPad mini, Galaxy Tab, MacBook Air & Pro, Full HD & QHD monitors, Smart TV, smartwatch, kiosk
 • Up to 4 devices at once, automatically scaled to fit your screen
 • Real mobile behaviour: matching iOS / Android / iPad user agent, client hints and touch support
 • Portrait & landscape rotation with accurate notches, Dynamic Island and punch-hole cameras
@@ -48,7 +48,7 @@ Device names are trademarks of their respective owners. MY Simulator is not affi
 MY Simulator menampilkan website kamu di HP, tablet, laptop, dan TV yang realistis — berdampingan, langsung di Chrome. Tanpa emulator, tanpa akun, tanpa pelacakan.
 
 ★ FITUR
-• 56 preset perangkat: iPhone 17 Pro / Pro Max / Air, iPhone 16, iPhone SE, Galaxy S25 Ultra, Galaxy Z Fold7 & Flip7, Pixel 10 Pro, Xiaomi 15, OPPO Reno14, vivo V50, Infinix Hot 50, iPad Pro, iPad mini, Galaxy Tab, MacBook, monitor Full HD & QHD, Smart TV, smartwatch, kiosk
+• 88 preset perangkat: iPhone Duo (terlipat & terbuka), iPhone 18 Pro / Pro Max, iPhone Air, iPhone SE, Galaxy S26 Ultra, Galaxy Z Fold8 & Flip8, Pixel 11 Pro, Pixel 10 Pro Fold, Xiaomi 17 Ultra, Motorola Razr 70 Ultra, OnePlus 15, Xiaomi 15, OPPO Reno14, vivo V50, Infinix Hot 50, iPad Pro, iPad mini, Galaxy Tab, MacBook, monitor Full HD & QHD, Smart TV, smartwatch, kiosk
 • Hingga 4 perangkat sekaligus, otomatis menyesuaikan layar
 • Perilaku mobile asli: user agent iOS / Android / iPad, client hints, dan dukungan sentuh
 • Rotasi potret & lanskap dengan notch, Dynamic Island, dan kamera punch-hole yang akurat

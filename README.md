@@ -8,13 +8,13 @@ Ekstensi Chrome (Manifest V3) untuk mengetes tampilan website di HP, tablet, lap
 3. Pin ikon MY Simulator, buka website apa saja, lalu klik ikonnya atau tekan **Alt+Shift+M**.
 
 ## Fitur
-- 56 perangkat (iPhone 17, Galaxy S25, Pixel 10, Fold7, iPad, MacBook, TV, smartwatch, kiosk) + ukuran kustom
+- 88 perangkat (iPhone Duo, iPhone 18 Pro, Galaxy S26, Z Fold8/Flip8, Pixel 11, Xiaomi 17, iPad, MacBook, TV, smartwatch, kiosk) + ukuran kustom
 - Hingga 4 perangkat sekaligus, auto-fit atau zoom manual 20–150%
 - User agent + touch emulation per perangkat, rotasi, status bar mengikuti warna halaman
 - Screenshot per perangkat (dengan bingkai, sudut transparan)
 - Sinkronisasi navigasi & scroll, tema gelap/terang, 5 aksen, 6 warna bodi, mode tanpa bingkai
 
-Pintasan: `D` perangkat · `/` cari · `A` tambah · `R` putar · `S` screenshot · `Z` zoom · `+`/`-`/`0` · `T` tema · `L` address bar · `Esc` tutup.
+Pintasan: `D` perangkat · `/` cari · `A` tambah · `R` putar · `S` screenshot · `Z` zoom · `+`/`-`/`0` · `T` tema · `Esc` tutup.
 
 ## Struktur
 | Path | Isi |
@@ -25,6 +25,7 @@ Pintasan: `D` perangkat · `/` cari · `A` tambah · `R` putar · `S` screenshot
 | `src/devices.js` | Katalog perangkat & profil user agent |
 | `src/frame-agent.js`, `src/frame-ua.js` | Skrip di dalam frame simulator (warna status bar, sync, UA di JS) |
 | `icons/` | Ikon ekstensi 16/32/48/128 |
+| `brand/`, `tools/mkbrand.py` | Logo sumber + skrip pembuat ikon, favicon, OG image, promo tile |
 | `site/` | Landing page SEO + favicon, OG image, webmanifest, robots, sitemap |
 | `store/` | Teks listing Chrome Web Store (EN + ID) dan promo tile |
 | `dev/` | Harness pratinjau UI tanpa memasang ekstensi |
