@@ -39,6 +39,9 @@ Live sites, staging servers and localhost. Chrome, Edge and Brave.
 ★ PRIVACY
 Everything runs locally. Settings are stored in Chrome storage, screenshots are saved straight to your computer. Nothing is collected or sent anywhere.
 
+Built by Yuma Studio — https://yumastudio.digital/
+Website: https://mymobilesimulator.vercel.app
+
 Device names are trademarks of their respective owners. MY Simulator is not affiliated with any manufacturer.
 
 ---
@@ -64,6 +67,8 @@ Website live, server staging, dan localhost. Chrome, Edge, dan Brave.
 
 ★ PRIVASI
 Semua berjalan lokal di browser. Tidak ada data yang dikumpulkan atau dikirim.
+
+Dibuat oleh Yuma Studio — https://yumastudio.digital/
 
 ---
 

@@ -3,7 +3,8 @@
   "name": "MY Simulator – Mobile & Responsive Website Tester",
   "short_name": "MY Simulator",
   "version": "1.0.0",
-  "author": "MY Simulator",
+  "author": "Yuma Studio",
+  "homepage_url": "https://mymobilesimulator.vercel.app/",
   "minimum_chrome_version": "116",
   "description": "Test responsive websites on iPhone, Android, iPad, laptop & TV frames side by side. Rotate, screenshot & sync scroll.",
   "icons": {

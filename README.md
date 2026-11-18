@@ -2,6 +2,8 @@
 
 Ekstensi Chrome (Manifest V3) untuk mengetes tampilan website di HP, tablet, laptop, dan TV secara berdampingan.
 
+Built by [Yuma Studio](https://yumastudio.digital/) · Website: https://mymobilesimulator.vercel.app
+
 ## Pasang (mode developer)
 1. Buka `chrome://extensions` → aktifkan **Developer mode**.
 2. Klik **Load unpacked** → pilih folder ini (`mobilesimulator`).
@@ -31,10 +33,11 @@ Pintasan: `D` perangkat · `/` cari · `A` tambah · `R` putar · `S` screenshot
 | `dev/` | Harness pratinjau UI tanpa memasang ekstensi |
 
 ## Landing page (`site/`)
-Semua URL absolut memakai `https://example.com/` sebagai placeholder. Ganti dengan domain asli sebelum deploy:
+Live di **https://mymobilesimulator.vercel.app** — Vercel menyajikan folder `site/` (lihat `vercel.json`), tanpa build step.
+Kalau pindah domain, ganti semua URL absolut sekaligus:
 
 ```bash
-grep -rl "https://example.com" site | xargs sed -i "s#https://example.com#https://domain-kamu.com#g"
+grep -rl "https://mymobilesimulator.vercel.app" site | xargs sed -i "s#https://mymobilesimulator.vercel.app#https://domain-kamu.com#g"
 ```
 
 Lalu ganti `href="#install"` di `site/index.html` dengan link Chrome Web Store setelah ekstensi terbit.

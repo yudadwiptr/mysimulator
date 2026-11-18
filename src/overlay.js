@@ -910,6 +910,9 @@
     else if (popName === 'help') renderHelp(p);
   }
 
+  const creditHTML = `<a class="credit" href="https://yumastudio.digital/" target="_blank" rel="noopener">
+      <span>Built by</span><b>Yuma Studio</b>${IC.external}</a>`;
+
   const popHead = (title, sub) =>
     `<div class="pop-h"><div><h3>${title}</h3><p>${sub}</p></div><button class="ib" data-act="pop-close" title="Close">${IC.close}</button></div>`;
 
@@ -1077,6 +1080,7 @@
           ${trow('syncNav', 'Sync navigation', 'Clicking a link in one device opens it in all')}
           ${trow('syncScroll', 'Sync scrolling', 'Scroll every device together')}
           <p class="note">Settings are saved in this browser.</p>
+          ${creditHTML}
         </div>
       </div>`;
     p.querySelector('.pop-body').scrollTop = scroll;
@@ -1112,7 +1116,7 @@
     p.innerHTML = `
       ${popHead('Shortcuts', 'Work faster with the keyboard')}
       <div class="pop-body"><div class="keys">${keys.map(([k, l]) => `<div class="key"><span>${l}</span><kbd>${k}</kbd></div>`).join('')}</div>
-      <p class="note">Shortcuts work while the studio has focus — click its background if a page captured the keyboard.</p></div>`;
+      <p class="note">Shortcuts work while the studio has focus — click its background if a page captured the keyboard.</p>${creditHTML}</div>`;
   }
 
   // ---------- events ----------
