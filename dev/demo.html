@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="../src/frame-ua.js"></script>
+  <script src="../src/frame-agent.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f172a">
+  <title>Responsive demo</title>
+  <style>
+    :root { --ink: #0f172a; --soft: #64748b; --brand: #6d5efc; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: #f8fafc; }
+    header { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: #0f172a; color: #fff; }
+    header b { font-size: 17px; letter-spacing: -.02em; }
+    nav { display: flex; gap: 18px; font-size: 14px; }
+    nav a { color: #cbd5e1; text-decoration: none; }
+    .burger { display: none; width: 22px; height: 14px; border-top: 2px solid #fff; border-bottom: 2px solid #fff; position: relative; }
+    .burger::after { content: ""; position: absolute; left: 0; right: 0; top: 4px; border-top: 2px solid #fff; }
+    .hero { padding: 56px 20px 40px; text-align: center; background: linear-gradient(180deg, #0f172a, #1e293b); color: #fff; }
+    .hero h1 { margin: 0 0 10px; font-size: clamp(30px, 6vw, 56px); line-height: 1.05; letter-spacing: -.035em; }
+    .hero p { margin: 0 auto 22px; max-width: 520px; color: #cbd5e1; }
+    .pill { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .pill span { padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.1); font: 500 13px ui-monospace, monospace; }
+    .bp { display: inline-block; margin-top: 18px; padding: 8px 14px; border-radius: 10px; background: var(--brand); font-weight: 600; }
+    main { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .card { padding: 20px; border-radius: 16px; background: #fff; box-shadow: 0 1px 2px rgba(15,23,42,.06), 0 8px 24px -12px rgba(15,23,42,.18); }
+    .card i { display: block; height: 110px; border-radius: 12px; margin-bottom: 14px; background: linear-gradient(135deg, #c7d2fe, #fbcfe8); }
+    .card:nth-child(2n) i { background: linear-gradient(135deg, #bbf7d0, #bae6fd); }
+    .card h3 { margin: 0 0 4px; font-size: 16px; }
+    .card p { margin: 0; color: var(--soft); font-size: 14px; }
+    .links { margin: 28px 0; display: flex; gap: 12px; flex-wrap: wrap; }
+    .links a { color: var(--brand); font-weight: 600; }
+    .long p { color: var(--soft); }
+    @media (max-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } nav { display: none; } .burger { display: block; } }
+    @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header><b>Northwind</b><nav><a href="#">Product</a><a href="#">Pricing</a><a href="#">Docs</a><a href="#">Login</a></nav><span class="burger"></span></header>
+  <section class="hero">
+    <h1 id="title">Responsive demo</h1>
+    <p>This page reports what the device frame sees, so you can check viewport, user agent and touch emulation.</p>
+    <div class="pill"><span id="vp"></span><span id="ua"></span><span id="touch"></span></div>
+    <div class="bp" id="bp"></div>
+  </section>
+  <main>
+    <div class="grid">
+      <div class="card"><i></i><h3>Fast</h3><p>Ship pages that feel instant on every screen.</p></div>
+      <div class="card"><i></i><h3>Fluid</h3><p>Layouts that bend instead of break.</p></div>
+      <div class="card"><i></i><h3>Focused</h3><p>Only what matters, nothing else.</p></div>
+      <div class="card"><i></i><h3>Friendly</h3><p>Accessible by default, delightful by design.</p></div>
+    </div>
+    <div class="links"><a href="demo.html?page=2">Go to page 2 →</a><a href="demo.html">Back to page 1</a></div>
+    <div class="long">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+      <p>Cras mattis consectetur purus sit amet fermentum. Donec ullamcorper nulla non metus auctor fringilla.</p>
+      <p>Maecenas sed diam eget risus varius blandit sit amet non magna. Vestibulum id ligula porta felis euismod semper.</p>
+      <p>Nullam quis risus eget urna mollis ornare vel eu leo. Aenean lacinia bibendum nulla sed consectetur.</p>
+      <p>Etiam porta sem malesuada magna mollis euismod. Sed posuere consectetur est at lobortis.</p>
+    </div>
+  </main>
+  <script>
+    if (new URLSearchParams(location.search).get('page') === '2') {
+      document.getElementById('title').textContent = 'Page two';
+      document.title = 'Page two';
+    }
+    const ua = navigator.userAgent;
+    const kind = /iPhone/.test(ua) ? 'iPhone UA' : /iPad/.test(ua) ? 'iPad UA' : /Android/.test(ua) ? 'Android UA' : /TV/.test(ua) ? 'TV UA' : 'Desktop UA';
+    function paint() {
+      document.getElementById('vp').textContent = innerWidth + ' × ' + innerHeight;
+      document.getElementById('ua').textContent = kind;
+      document.getElementById('touch').textContent = navigator.maxTouchPoints > 0 ? 'touch' : 'no touch';
+      const w = innerWidth;
+      document.getElementById('bp').textContent = w <= 480 ? 'Phone layout' : w <= 768 ? 'Large phone / small tablet' : w <= 1024 ? 'Tablet layout' : 'Desktop layout';
+    }
+    addEventListener('resize', paint);
+    paint();
+  </script>
+</body>
+</html>

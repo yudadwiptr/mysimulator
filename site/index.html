@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- Primary SEO -->
+  <title>MY Simulator – Mobile &amp; Responsive Website Tester for Chrome</title>
+  <meta name="description" content="Test your site on 56 real devices side by side: iPhone 17, Galaxy S25, Pixel 10, iPad, MacBook &amp; TV. Rotate, screenshot, sync scroll. Free for Chrome.">
+  <meta name="keywords" content="mobile simulator, responsive design tester, iphone simulator chrome, android emulator browser, device mockup, responsive website checker, screen size tester">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="MY Simulator">
+  <link rel="canonical" href="https://example.com/">
+  <meta name="theme-color" content="#07080b">
+  <meta name="color-scheme" content="dark">
+
+  <!-- Favicons -->
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MY Simulator">
+  <meta property="og:title" content="MY Simulator – Test your website on 50+ real devices">
+  <meta property="og:description" content="iPhone, Android, iPad, laptop and TV frames side by side, right inside Chrome. Rotate, screenshot, sync scroll — free.">
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:image" content="https://example.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MY Simulator showing a website on a phone, a tablet and a laptop">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="id_ID">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MY Simulator – Mobile &amp; Responsive Website Tester">
+  <meta name="twitter:description" content="Preview any page on 50+ realistic devices, side by side. Free Chrome extension.">
+  <meta name="twitter:image" content="https://example.com/og-image.png">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "MY Simulator",
+        "alternateName": "MY Simulator – Mobile & Responsive Website Tester",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "Browser extension",
+        "operatingSystem": "Google Chrome, Microsoft Edge, Brave",
+        "description": "Test responsive websites on iPhone, Android, iPad, laptop and TV frames side by side. Rotate, screenshot and sync scroll.",
+        "url": "https://example.com/",
+        "image": "https://example.com/og-image.png",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": [
+          "56 device presets including iPhone 17, Galaxy S25, Pixel 10, iPad Pro and MacBook",
+          "Up to four devices side by side",
+          "Mobile user agent and touch emulation",
+          "Portrait and landscape rotation",
+          "One-click device screenshots with transparent corners",
+          "Synced navigation and scrolling",
+          "Custom device sizes",
+          "Dark and light themes"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Is MY Simulator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every device, screenshot and sync feature is free, with no account required." } },
+          { "@type": "Question", "name": "Does it emulate the mobile user agent?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Each frame is loaded with the matching iOS, Android, iPad or TV user agent and touch support, so sites serve their mobile layouts." } },
+          { "@type": "Question", "name": "Can I test localhost?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Open your local dev server in Chrome, then open MY Simulator — it works on localhost and staging environments." } },
+          { "@type": "Question", "name": "Is my browsing data sent anywhere?", "acceptedAnswer": { "@type": "Answer", "text": "No. Everything runs locally in your browser. Settings are stored in Chrome storage and screenshots are saved directly to your computer." } }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #07080b; --fg: #f3f4f6; --muted: #9a9eab; --faint: #5f6370;
+      --line: rgba(255,255,255,.08); --card: rgba(255,255,255,.035);
+      --accent: #8b7bff; --accent-2: #6280ff;
+      --font: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+      --mono: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html, body { overflow-x: clip; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+    .wrap { width: min(1160px, 100% - 32px); margin: 0 auto; }
+    .glow { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: -1; }
+    .glow i { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(10px); opacity: .5; }
+    .glow i:nth-child(1) { left: -20vmax; top: -30vmax; background: radial-gradient(closest-side, rgba(139,123,255,.75), transparent); }
+    .glow i:nth-child(2) { right: -24vmax; top: -12vmax; background: radial-gradient(closest-side, rgba(61,123,255,.45), transparent); }
+
+    header.nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); background: rgba(7,8,11,.6); border-bottom: 1px solid var(--line); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.02em; text-decoration: none; }
+    .logo img { width: 30px; height: 30px; }
+    .nav nav { display: flex; gap: 26px; font-size: 14px; color: var(--muted); }
+    .nav nav a { text-decoration: none; }
+    .nav nav a:hover { color: var(--fg); }
+    .btn { display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 22px; border-radius: 999px; font-weight: 650; text-decoration: none; transition: transform .2s, filter .2s; }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+    .btn.primary { background: linear-gradient(180deg, #9b8cff, var(--accent-2)); color: #fff; box-shadow: 0 12px 30px -10px rgba(139,123,255,.7), inset 0 1px 0 rgba(255,255,255,.3); }
+    .btn.ghost { border: 1px solid var(--line); background: var(--card); }
+    .btn.sm { height: 38px; padding: 0 16px; font-size: 14px; }
+    .btn svg { width: 18px; height: 18px; }
+
+    .hero { position: relative; padding: 88px 0 40px; text-align: center; isolation: isolate; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); font-size: 13px; color: var(--muted); }
+    .eyebrow b { color: var(--fg); font-weight: 600; }
+    .eyebrow i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(139,123,255,.25); }
+    h1 { margin: 22px auto 18px; max-width: 900px; font-size: clamp(40px, 7vw, 80px); line-height: 1.02; letter-spacing: -.045em; font-weight: 750; }
+    h1 span { background: linear-gradient(90deg, #b8adff, #7fa2ff 60%, #8fe3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { margin: 0 auto 34px; max-width: 620px; font-size: clamp(17px, 2vw, 20px); color: var(--muted); }
+    .ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .small { margin-top: 14px; font-size: 13px; color: var(--faint); }
+
+    .stage { position: relative; margin: 64px auto 0; height: 470px; max-width: 980px; }
+    .dev { position: absolute; bottom: 0; border-radius: 34px; padding: 3px; background: linear-gradient(140deg, #4a4b52, #1b1c20 40%, #45464c 75%, #1b1c20); box-shadow: 0 50px 90px -30px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.15); }
+    .dev .in { height: 100%; border-radius: 31px; padding: 9px; background: #030304; }
+    .scr { height: 100%; border-radius: 23px; overflow: hidden; background: #f8fafc; position: relative; }
+    .scr .bar { height: 46px; background: #0f172a; }
+    .scr .hd { height: 120px; background: linear-gradient(180deg, #0f172a, #1e293b); display: grid; place-items: center; }
+    .scr .hd span { width: 60%; height: 14px; border-radius: 7px; background: rgba(255,255,255,.85); }
+    .scr .cards { display: grid; gap: 10px; padding: 12px; }
+    .scr .cards i { height: 70px; border-radius: 12px; background: linear-gradient(135deg, #c7d2fe, #fbcfe8); }
+    .scr .cards i:nth-child(2n) { background: linear-gradient(135deg, #bbf7d0, #bae6fd); }
+    .dev.phone { width: 230px; height: 470px; left: 50%; margin-left: -115px; z-index: 3; }
+    .dev.phone .scr::before { content: ""; position: absolute; top: 9px; left: 50%; width: 76px; height: 22px; margin-left: -38px; border-radius: 12px; background: #000; z-index: 2; }
+    .dev.tab { width: 330px; height: 420px; left: 6%; z-index: 2; border-radius: 26px; }
+    .dev.tab .in { border-radius: 23px; padding: 14px; } .dev.tab .scr { border-radius: 10px; }
+    .dev.tab .cards { grid-template-columns: 1fr 1fr; }
+    .dev.lap { width: 400px; height: 270px; right: 4%; bottom: 18px; z-index: 1; border-radius: 16px 16px 4px 4px; }
+    .dev.lap .in { border-radius: 13px 13px 2px 2px; padding: 12px 12px 20px; } .dev.lap .scr { border-radius: 4px; }
+    .dev.lap .cards { grid-template-columns: repeat(3, 1fr); } .dev.lap .hd { height: 80px; } .dev.lap .bar { height: 24px; }
+    .dev.lap::after { content: ""; position: absolute; left: -7%; right: -7%; bottom: -18px; height: 18px; border-radius: 3px 3px 18px 18px / 3px 3px 100% 100%; background: linear-gradient(#d9dbe0, #8d9099); }
+
+    section { padding: 96px 0; }
+    .sec-h { text-align: center; margin-bottom: 52px; }
+    .sec-h h2 { margin: 0 0 12px; font-size: clamp(30px, 4.5vw, 46px); letter-spacing: -.035em; line-height: 1.1; }
+    .sec-h p { margin: 0 auto; max-width: 560px; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .feat { padding: 26px; border-radius: 22px; border: 1px solid var(--line); background: var(--card); }
+    .feat .ic { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 13px; background: rgba(139,123,255,.14); color: #b3a8ff; margin-bottom: 18px; }
+    .feat .ic svg { width: 22px; height: 22px; }
+    .feat h3 { margin: 0 0 6px; font-size: 17px; letter-spacing: -.01em; }
+    .feat p { margin: 0; color: var(--muted); font-size: 15px; }
+
+    .devices { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 900px; margin: 0 auto; }
+    .devices li { list-style: none; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); font-size: 14px; }
+    .devices li small { margin-left: 8px; font: 500 12px var(--mono); color: var(--muted); }
+
+    .steps { counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .step { position: relative; padding: 28px; border-radius: 22px; border: 1px solid var(--line); background: var(--card); }
+    .step::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 34px; height: 34px; margin-bottom: 16px; border-radius: 11px; background: var(--fg); color: var(--bg); font-weight: 700; }
+    .step h3 { margin: 0 0 6px; font-size: 17px; } .step p { margin: 0; color: var(--muted); font-size: 15px; }
+    kbd { font: 600 13px var(--mono); padding: 3px 8px; border-radius: 7px; border: 1px solid var(--line); border-bottom-width: 2px; background: rgba(255,255,255,.05); }
+
+    .faq { max-width: 760px; margin: 0 auto; }
+    .faq details { border-bottom: 1px solid var(--line); padding: 20px 4px; }
+    .faq summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+    .faq summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 22px; line-height: 1; transition: transform .2s; }
+    .faq details[open] summary::after { transform: rotate(45deg); }
+    .faq p { margin: 12px 0 0; color: var(--muted); }
+
+    .cta { text-align: center; padding: 72px 24px; border-radius: 32px; border: 1px solid var(--line); background: radial-gradient(ellipse at 50% 0%, rgba(139,123,255,.28), transparent 70%), var(--card); }
+    .cta h2 { margin: 0 0 12px; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.03em; }
+    .cta p { margin: 0 0 28px; color: var(--muted); }
+    footer { padding: 40px 0 56px; color: var(--faint); font-size: 14px; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+    @media (max-width: 900px) {
+      .grid, .steps { grid-template-columns: 1fr 1fr; }
+      .dev.tab { left: -4%; } .dev.lap { right: -10%; }
+      .nav nav { display: none; }
+    }
+    @media (max-width: 760px) { .dev.lap { display: none; } .dev.tab { left: 2%; } }
+    @media (max-width: 620px) {
+      .grid, .steps { grid-template-columns: 1fr; }
+      .hero { padding-top: 56px; }
+      .stage { height: 420px; }
+      .dev.tab, .dev.lap { display: none; }
+      .dev.phone { width: 206px; height: 420px; margin-left: -103px; }
+      section { padding: 72px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a class="logo" href="#top" aria-label="MY Simulator home"><img src="favicon.svg" alt="" width="30" height="30">MY Simulator</a>
+      <nav aria-label="Main"><a href="#features">Features</a><a href="#devices">Devices</a><a href="#how">How it works</a><a href="#faq">FAQ</a></nav>
+      <a class="btn primary sm" href="#install">Add to Chrome</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="glow" aria-hidden="true"><i></i><i></i></div>
+      <div class="wrap">
+        <span class="eyebrow"><i></i><b>New</b> iPhone 17, Pixel 10 &amp; Galaxy Z Fold7 frames</span>
+        <h1 id="hero-title">See your website on <span>every screen</span> at once.</h1>
+        <p class="lead">MY Simulator puts realistic phones, tablets, laptops and TVs side by side inside Chrome — with mobile user agents, touch emulation, rotation and one-click screenshots.</p>
+        <div class="ctas">
+          <a class="btn primary" id="install" href="#install">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+            Add to Chrome — it's free
+          </a>
+          <a class="btn ghost" href="#features">See features</a>
+        </div>
+        <p class="small">Works in Chrome, Edge and Brave · No account · No tracking</p>
+
+        <div class="stage" role="img" aria-label="A web page shown on a tablet, a phone and a laptop">
+          <div class="dev tab"><div class="in"><div class="scr"><div class="bar"></div><div class="hd"><span></span></div><div class="cards"><i></i><i></i><i></i><i></i></div></div></div></div>
+          <div class="dev phone"><div class="in"><div class="scr"><div class="bar"></div><div class="hd"><span></span></div><div class="cards"><i></i><i></i><i></i></div></div></div></div>
+          <div class="dev lap"><div class="in"><div class="scr"><div class="bar"></div><div class="hd"><span></span></div><div class="cards"><i></i><i></i><i></i></div></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <div class="sec-h"><h2 id="features-title">Everything you need to ship responsive</h2><p>Built for designers, developers and QA teams who want the real picture — not just a resized window.</p></div>
+        <div class="grid">
+          <article class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="13" height="10" rx="2"/><path d="M6 18h5"/><rect x="16" y="8" width="6" height="12" rx="1.6"/></svg></div><h3>Up to 4 devices side by side</h3><p>Compare iPhone, Android, tablet and desktop layouts in one view, scaled to fit your screen.</p></article>
+          <article class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 5.5h3"/></svg></div><h3>Real mobile behaviour</h3><p>Matching user agents, client hints and touch support, so sites serve the layout real users see.</p></article>
+          <article class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4.2 4.2 0 0 0 6 0l3-3a4.2 4.2 0 0 0-6-6l-1 1"/><path d="M14 10a4.2 4.2 0 0 0-6 0l-3 3a4.2 4.2 0 0 0 6 6l1-1"/></svg></div><h3>Synced navigation &amp; scroll</h3><p>Click a link or scroll in one device and every other device follows along.</p></article>
+          <article class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h3l1.8-2.6h6.4L17 8h3a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/></svg></div><h3>Pixel-perfect screenshots</h3><p>Capture any device with its frame and transparent rounded corners — ready for decks and app stores.</p></article>
+          <article class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="11" width="14" height="9.5" rx="2.2"/><path d="M7 7.5a8 8 0 0 1 13 2"/><path d="m20.6 4.8-.5 4.9-4.6-1.4"/></svg></div><h3>Rotate &amp; zoom</h3><p>Flip any phone or tablet to landscape and zoom from 20% to 150%, or let it fit automatically.</p></article>
+          <article class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg></div><h3>Make it yours</h3><p>Dark &amp; light themes, five accents, device finishes, frameless mode and custom device sizes.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="devices" aria-labelledby="devices-title">
+      <div class="wrap">
+        <div class="sec-h"><h2 id="devices-title">56 devices, ready to go</h2><p>Current flagships, popular mid-rangers and the screens your users actually have.</p></div>
+        <ul class="devices">
+          <li>iPhone 17 Pro Max<small>440×956</small></li><li>iPhone 17 Pro<small>402×874</small></li><li>iPhone Air<small>420×912</small></li><li>iPhone 16<small>393×852</small></li><li>iPhone SE<small>375×667</small></li>
+          <li>Galaxy S25 Ultra<small>412×891</small></li><li>Galaxy Z Fold7<small>750×832</small></li><li>Galaxy Z Flip7<small>412×960</small></li><li>Pixel 10 Pro<small>410×914</small></li><li>Xiaomi 15<small>393×873</small></li>
+          <li>OPPO Reno14<small>412×915</small></li><li>vivo V50<small>412×915</small></li><li>Infinix Hot 50<small>393×873</small></li><li>iPad Pro 13"<small>1032×1376</small></li><li>iPad mini<small>744×1133</small></li>
+          <li>Galaxy Tab S10<small>800×1280</small></li><li>MacBook Air 13"<small>1280×832</small></li><li>MacBook Pro 16"<small>1728×1117</small></li><li>Laptop HD<small>1366×768</small></li><li>Smart TV<small>1920×1080</small></li>
+          <li>Smartwatch<small>208×248</small></li><li>Kiosk<small>1080×1920</small></li><li>+ your own custom sizes</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="sec-h"><h2 id="how-title">Three steps. Zero setup.</h2><p>Works on live sites, staging and localhost.</p></div>
+        <div class="steps">
+          <article class="step"><h3>Install the extension</h3><p>Add MY Simulator to Chrome, Edge or Brave and pin it to your toolbar.</p></article>
+          <article class="step"><h3>Open any page</h3><p>Click the icon or press <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> on the page you want to test.</p></article>
+          <article class="step"><h3>Pick your devices</h3><p>Press <kbd>D</kbd> for the library, <kbd>R</kbd> to rotate, <kbd>S</kbd> for a screenshot.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <div class="sec-h"><h2 id="faq-title">Questions</h2></div>
+        <div class="faq">
+          <details open><summary>Is MY Simulator free?</summary><p>Yes. Every device, screenshot and sync feature is free, with no account required.</p></details>
+          <details><summary>Does it emulate the mobile user agent?</summary><p>Yes. Each frame is loaded with the matching iOS, Android, iPad or TV user agent and touch support, so sites serve their mobile layouts.</p></details>
+          <details><summary>Can I test localhost?</summary><p>Yes. Open your local dev server in Chrome, then open MY Simulator — it works on localhost and staging environments.</p></details>
+          <details><summary>Is my browsing data sent anywhere?</summary><p>No. Everything runs locally in your browser. Settings are stored in Chrome storage and screenshots are saved directly to your computer.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Install">
+      <div class="wrap">
+        <div class="cta">
+          <h2>Stop guessing how it looks on mobile.</h2>
+          <p>Install MY Simulator and see every screen in seconds.</p>
+          <a class="btn primary" href="#install">Add to Chrome — it's free</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap"><span>© 2026 MY Simulator</span><span>Device names are trademarks of their respective owners. Not affiliated with any manufacturer.</span></div>
+  </footer>
+</body>
+</html>

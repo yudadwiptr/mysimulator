@@ -1,0 +1,14 @@
+{
+  "name": "MY Simulator – Mobile & Responsive Website Tester",
+  "short_name": "MY Simulator",
+  "description": "Test your website on 50+ real devices side by side.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07080b",
+  "theme_color": "#07080b",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

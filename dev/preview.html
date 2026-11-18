@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MY Simulator preview harness</title>
+  <style>
+    body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: #222; }
+    .page { padding: 48px; }
+    button { font: inherit; padding: 10px 16px; border-radius: 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Host page</h1>
+    <p>This stands in for the tab the extension is opened on. Chrome APIs are absent here, so screenshots are disabled and settings go to localStorage.</p>
+    <button id="open">Open studio</button>
+  </div>
+  <script>window.__MSIM_START_URL = 'demo.html';</script>
+  <script src="../src/devices.js"></script>
+  <script src="../src/icons.js"></script>
+  <script>
+    let css = null;
+    async function open() {
+      if (!css) css = await (await fetch('../src/overlay.css', { cache: 'no-store' })).text();
+      window.__MSIM_CSS = css;
+      const s = document.createElement('script');
+      s.src = '../src/overlay.js?' + Date.now();
+      document.body.appendChild(s);
+    }
+    document.getElementById('open').onclick = open;
+    open();
+  </script>
+</body>
+</html>
