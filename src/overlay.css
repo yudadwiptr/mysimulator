@@ -221,10 +221,11 @@ kbd { font: 500 11px/1 var(--mono); }
 .screen {
   --sbg: #ffffff; --sfg: #000000;
   position: absolute; left: var(--sx); top: var(--sy); width: var(--w); height: var(--h); z-index: 1;
-  border-radius: var(--sr); overflow: hidden; background: #fff; isolation: isolate; transform: translateZ(0);
+  border-radius: var(--sr); overflow: hidden; background: var(--sbg); isolation: isolate; transform: translateZ(0); transition: background .35s;
 }
-.vp { position: absolute; left: 0; right: 0; top: var(--sb); bottom: 0; background: #fff; color-scheme: light; }
-.vp iframe { display: block; width: 100%; height: 100%; border: 0; background: #fff; color-scheme: light; }
+/* the viewport sits on the page's own colour so scaled, anti-aliased iframe edges never flash white */
+.vp { position: absolute; left: 0; right: 0; top: var(--sb); bottom: 0; background: var(--sbg); color-scheme: light; transition: background .35s; }
+.vp iframe { display: block; width: 100%; height: 100%; border: 0; background: transparent; color-scheme: light; }
 
 .loader { position: absolute; left: 0; right: 0; bottom: 0; top: var(--sb); z-index: 2; display: grid; place-items: center; background: #fff; pointer-events: none; transition: opacity .35s .05s; }
 .loader span { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid rgba(0, 0, 0, .08); border-top-color: rgba(0, 0, 0, .55); animation: spin .8s linear infinite; }

@@ -31,7 +31,11 @@
 
   const css =
     (cfg.hide
-      ? 'html{scrollbar-width:none!important}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}'
+      ? // phones/tablets use overlay scrollbars that take no space: hide every scrollbar,
+        // including ones a site styles on inner containers, and drop any reserved gutter
+        'html{scrollbar-gutter:auto!important}' +
+        '*{scrollbar-width:none!important}' +
+        '*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important;background:transparent!important}'
       : '') +
     `html[data-msim-touch],html[data-msim-touch] *{cursor:${cursor(12, 'rgba(20,20,24,.28)')}!important}` +
     `html[data-msim-touch][data-msim-press],html[data-msim-touch][data-msim-press] *{cursor:${cursor(9, 'rgba(20,20,24,.5)')}!important}`;
