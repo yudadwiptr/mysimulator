@@ -47,6 +47,9 @@
     home: { b: 16, chin: 80, r: 60, sr: 3, sb: 20 },
     punch: { b: 10, r: 46, sr: 36, sb: 30 },
     fold: { b: 10, r: 32, sr: 22, sb: 28 },
+    // book-style foldable (iPhone Duo): open = wide, closed = hinge spine on one edge
+    duo: { b: 11, r: 46, sr: 35, sb: 30 },
+    'duo-fold': { b: 10, r: 58, sr: 48, rs: 16, srs: 7, spine: 9, sb: 34 },
     tablet: { b: 20, r: 38, sr: 18, sb: 24 },
     watch: { b: 16, r: 62, sr: 46, sb: 0 },
     laptop: { b: 16, top: 20, chin: 30, r: 20, sr: 6, sb: 0 },
@@ -55,6 +58,7 @@
     kiosk: { b: 30, r: 22, sr: 6, sb: 0 },
   };
   const MOBILE = new Set(['island', 'notch', 'home', 'punch', 'fold']);
+  const DUO = new Set(['duo', 'duo-fold']);
   const SUGGEST = ['iphone-18-pro', 'galaxy-s26-ultra', 'iphone-duo-open', 'pixel-11-pro', 'ipad-air-11', 'macbook-air-13'];
 
   const DEFAULTS = {
@@ -208,12 +212,12 @@
     let h = d.h;
     if (land) [w, h] = [h, w];
     let sb = F.sb;
-    if (land && MOBILE.has(d.frame)) sb = 0;
+    if (land && (MOBILE.has(d.frame) || d.frame === 'duo-fold')) sb = 0;
     if (d.ua === 'desktop' || d.ua === 'tv') sb = 0;
     const g = { w, h, sb, land, frame: d.frame };
 
     if (!S.frame) {
-      const sr = MOBILE.has(d.frame) ? 30 : d.frame === 'watch' ? 44 : d.frame === 'tablet' ? 18 : 10;
+      const sr = MOBILE.has(d.frame) || DUO.has(d.frame) ? 30 : d.frame === 'watch' ? 44 : d.frame === 'tablet' ? 18 : 10;
       return Object.assign(g, { b: 0, r: sr, sr, bw: w, bh: h, ow: w, oh: h, bx: 0, by: 0, sx: 0, sy: 0 });
     }
 
@@ -226,6 +230,11 @@
       if (land) { sx = F.chin; bw = w + 2 * F.chin; } else { sy = F.chin; bh = h + 2 * F.chin; }
     }
     if (d.frame === 'laptop') { sy = F.top; bh = h + F.top + F.chin; }
+    // the hinge spine is part of the body: left edge in portrait, bottom edge once rotated
+    if (d.frame === 'duo-fold') {
+      if (land) bh += F.spine;
+      else { bw += F.spine; sx += F.spine; }
+    }
 
     let ow = bw;
     let oh = bh;
@@ -267,7 +276,7 @@
         break;
       }
     }
-    return Object.assign(g, { b, r: F.r, sr: F.sr, bw, bh, ow, oh, bx, by, sx, sy }, extra);
+    return Object.assign(g, { b, r: F.r, sr: F.sr, rs: F.rs || F.r, srs: F.srs || F.sr, spine: F.spine || 0, bw, bh, ow, oh, bx, by, sx, sy }, extra);
   }
 
   function statusKind(d, g) {
@@ -276,12 +285,13 @@
     if (d.frame === 'home') return d.ua === 'ios' ? 'ios-home' : 'android';
     if (d.frame === 'tablet') return d.ua === 'ipad' ? 'ipad' : 'android';
     if (d.frame === 'fold' && d.ua === 'ios') return 'ipad';
+    if (DUO.has(d.frame)) return 'duo';
     return 'android';
   }
   function homeKind(d) {
     if (d.frame === 'island' || d.frame === 'notch') return 'bar';
     if (d.frame === 'tablet') return d.ua === 'ipad' ? 'bar' : d.ua === 'androidTab' ? 'pill' : 'none';
-    if (d.frame === 'fold' && d.ua === 'ios') return 'bar';
+    if ((d.frame === 'fold' && d.ua === 'ios') || DUO.has(d.frame)) return 'bar';
     if (d.frame === 'punch' || d.frame === 'fold') return 'pill';
     return 'none';
   }
@@ -294,6 +304,8 @@
         return `<div class="l">${IC.sSignal}${IC.sWifi}</div>${t}<div class="r">${IC.sBatt}</div>`;
       case 'ipad':
         return `<div class="l">${t}<span class="dt"></span></div><div class="r">${IC.sWifi}${IC.sBatt}</div>`;
+      case 'duo':
+        return `<div class="r">${t}${IC.sWifi}${IC.sBatt}</div>`;
       case 'android':
         return `<div class="l">${t}</div><div class="r">${IC.aWifi}${IC.aSignal}${IC.aBatt}</div>`;
       default:
@@ -346,7 +358,9 @@
           <div class="base"></div>
           <div class="body">
             <i class="hw hw-1"></i><i class="hw hw-2"></i><i class="hw hw-3"></i><i class="hw hw-4"></i>
+            <i class="spine"></i>
             <div class="glass"></div>
+            <i class="hinge h-a"></i><i class="hinge h-b"></i>
             <i class="lcam"></i><i class="speaker"></i><i class="homebtn"></i>
             <div class="screen">
               <div class="sbar" data-k=""></div>
@@ -402,7 +416,7 @@
   function applyGeom(L, s, g, scale) {
     const d = dev(s.id);
     const ds = L.device.style;
-    for (const k of ['ow', 'oh', 'bx', 'by', 'bw', 'bh', 'r', 'sr', 'sx', 'sy', 'w', 'h', 'sb', 'baseH', 'standH', 'strap']) {
+    for (const k of ['ow', 'oh', 'bx', 'by', 'bw', 'bh', 'r', 'sr', 'sx', 'sy', 'w', 'h', 'sb', 'baseH', 'standH', 'strap', 'rs', 'srs', 'spine']) {
       ds.setProperty('--' + k, (g[k] || 0) + 'px');
     }
     ds.transform = `scale(${scale})`;
@@ -578,7 +592,7 @@
 
     const before = geom(d, s.land);
     const s1 = lastScale;
-    const symmetric = !S.frame || MOBILE.has(d.frame) || d.frame === 'tablet';
+    const symmetric = !S.frame || MOBILE.has(d.frame) || DUO.has(d.frame) || d.frame === 'tablet';
     s.land = !s.land;
     save();
 
@@ -787,9 +801,15 @@
     root.classList.remove('shooting');
     await wait(fade + 160);
     const g = geom(d, s.land);
-    const clip = !S.frame || MOBILE.has(d.frame) || d.frame === 'tablet';
+    const clip = !S.frame || MOBILE.has(d.frame) || DUO.has(d.frame) || d.frame === 'tablet';
     const rect = (clip ? L.body : L.holder).getBoundingClientRect();
-    const radius = (clip ? g.r : 0) * lastScale;
+    // per-corner radii [tl, tr, br, bl]; the closed Duo is squarer on its hinge side
+    const corners = !clip ? [0, 0, 0, 0]
+      : S.frame && d.frame === 'duo-fold' ? (g.land ? [g.r, g.r, g.rs, g.rs] : [g.rs, g.r, g.r, g.rs])
+      : [g.r, g.r, g.r, g.r];
+    const capScale = lastScale; // the capture layout's scale, before we restore the studio
+    const radii = corners.map((v) => v * capScale);
+    const radius = clip ? 1 : 0;
     let res = null;
     try {
       res = await send({ type: 'msim:capture' });
@@ -821,7 +841,7 @@
     const ctx = c.getContext('2d');
     if (radius) {
       ctx.beginPath();
-      ctx.roundRect(0, 0, c.width, c.height, radius * k);
+      ctx.roundRect(0, 0, c.width, c.height, radii.map((v) => v * k));
       ctx.clip();
     }
     ctx.drawImage(img, x * k, y * k, w * k, h * k, 0, 0, c.width, c.height);

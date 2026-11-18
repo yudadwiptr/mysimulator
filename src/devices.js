@@ -54,8 +54,8 @@
 
   const list = [
     // iPhone
-    iphone('iphone-duo-open', 'iPhone Duo', 626, 890, 'fold', { variant: 'Unfolded', tag: 'New' }),
-    iphone('iphone-duo-closed', 'iPhone Duo', 466, 678, 'island', { variant: 'Folded', tag: 'New' }),
+    iphone('iphone-duo-open', 'iPhone Duo', 890, 626, 'duo', { variant: 'Unfolded', tag: 'New' }),
+    iphone('iphone-duo-closed', 'iPhone Duo', 466, 678, 'duo-fold', { variant: 'Folded', tag: 'New' }),
     iphone('iphone-18-pro-max', 'iPhone 18 Pro Max', 440, 956, 'island', NEW),
     iphone('iphone-18-pro', 'iPhone 18 Pro', 402, 874, 'island', NEW),
     iphone('iphone-17-pro-max', 'iPhone 17 Pro Max', 440, 956, 'island'),

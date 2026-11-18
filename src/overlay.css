@@ -256,12 +256,17 @@ kbd { font: 500 11px/1 var(--mono); }
 .sbar[data-k="ipad"] svg { height: 10.5px; }
 .sbar[data-k="ipad"] svg.bat { height: 11.5px; }
 .sbar[data-k="android"] { font: 500 13.5px/1 "Google Sans", Roboto, var(--font); padding: 0 20px 0 22px; }
+.sbar[data-k="duo"] { justify-content: flex-end; font-size: 14px; padding: 0 22px; }
+.sbar[data-k="duo"] .r { gap: 7px; }
+.sbar[data-k="duo"] svg { height: 11px; }
+.sbar[data-k="duo"] svg.bat { height: 12px; }
+.device[data-frame="duo-fold"] .sbar[data-k="duo"] { padding-right: 46px; } /* clear the corner camera */
 .sbar[data-k="android"] .r { gap: 5px; }
 .sbar[data-k="android"] svg { height: 12.5px; }
 .sbar[data-k="android"] .pct { font-size: 12.5px; }
 
 /* screen-level hardware */
-.island, .notch, .pcam, .crease, .homebar, .lcam, .speaker, .homebtn, .hw, .strap, .stand, .foot, .base { display: none; }
+.island, .notch, .pcam, .crease, .homebar, .lcam, .speaker, .homebtn, .hw, .strap, .stand, .foot, .base, .spine, .hinge { display: none; }
 .device[data-frame="island"] .island {
   display: block; position: absolute; z-index: 4; top: 11px; left: 50%; width: 126px; height: 37px; margin-left: -63px;
   border-radius: 20px; background: #000;
@@ -349,11 +354,63 @@ kbd { font: 500 11px/1 var(--mono); }
 .device[data-frame="watch"] .hw-4 { display: block; position: absolute; right: -8px; top: 22%; width: 10px; height: 17%; border-radius: 4px; background: linear-gradient(90deg, var(--fin-b), var(--fin-a)); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25); }
 .device[data-frame="watch"] .hw-3 { display: block; position: absolute; right: -4px; top: 50%; width: 5px; height: 22%; border-radius: 3px; background: linear-gradient(90deg, var(--fin-b), var(--fin-a)); }
 
+
+/* ---------- iPhone Duo (book-style foldable) ---------- */
+/* open: wide screen, soft fold valley down the middle, hinge gaps in the frame */
+.device[data-frame="duo"] .crease {
+  display: block; position: absolute; z-index: 4; top: 0; bottom: 0; left: 50%; width: 34px; margin-left: -17px; pointer-events: none;
+  background: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .05) 30%, rgba(0, 0, 0, .13) 47%, rgba(255, 255, 255, .12) 53%, rgba(0, 0, 0, .04) 70%, transparent 100%);
+  mix-blend-mode: multiply;
+}
+.device[data-frame="duo"][data-land="1"] .crease {
+  top: 50%; bottom: auto; left: 0; right: 0; width: auto; height: 34px; margin: -17px 0 0 0;
+  background: linear-gradient(180deg, transparent 0, rgba(0, 0, 0, .05) 30%, rgba(0, 0, 0, .13) 47%, rgba(255, 255, 255, .12) 53%, rgba(0, 0, 0, .04) 70%, transparent 100%);
+}
+.device[data-frame="duo"] .hinge { display: block; position: absolute; z-index: 2; left: 50%; width: 4px; height: 5px; margin-left: -2px; background: rgba(0, 0, 0, .55); box-shadow: 0 0 0 .5px rgba(255, 255, 255, .15); }
+.device[data-frame="duo"] .h-a { top: 0; border-radius: 0 0 2px 2px; }
+.device[data-frame="duo"] .h-b { bottom: 0; border-radius: 2px 2px 0 0; }
+.device[data-frame="duo"][data-land="1"] .hinge { left: auto; top: 50%; width: 5px; height: 4px; margin: -2px 0 0 0; }
+.device[data-frame="duo"][data-land="1"] .h-a { left: 0; border-radius: 0 2px 2px 0; }
+.device[data-frame="duo"][data-land="1"] .h-b { right: 0; border-radius: 2px 0 0 2px; }
+
+/* closed: hinge spine down one edge, squarer corners on that side, camera in the far corner */
+.device[data-frame="duo-fold"] .body { border-radius: var(--rs) var(--r) var(--r) var(--rs); }
+.device[data-frame="duo-fold"] .glass { left: calc(var(--spine) + 1px); border-radius: 4px calc(var(--r) - 3px) calc(var(--r) - 3px) 4px; }
+.device[data-frame="duo-fold"] .screen { border-radius: var(--srs) var(--sr) var(--sr) var(--srs); }
+.device[data-frame="duo-fold"] .spine {
+  display: block; position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--spine) + 6px); border-radius: var(--rs) 0 0 var(--rs);
+  background: linear-gradient(90deg,
+    color-mix(in oklab, var(--fin-b) 70%, #000) 0, var(--fin-a) 18%, color-mix(in oklab, var(--fin-a) 65%, #fff) 34%,
+    var(--fin-b) 52%, var(--fin-a) 70%, color-mix(in oklab, var(--fin-b) 75%, #000) 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .25);
+}
+.device[data-frame="duo-fold"][data-land="1"] .body { border-radius: var(--r) var(--r) var(--rs) var(--rs); }
+.device[data-frame="duo-fold"][data-land="1"] .glass { left: 3px; bottom: calc(var(--spine) + 1px); border-radius: calc(var(--r) - 3px) calc(var(--r) - 3px) 4px 4px; }
+.device[data-frame="duo-fold"][data-land="1"] .screen { border-radius: var(--sr) var(--sr) var(--srs) var(--srs); }
+.device[data-frame="duo-fold"][data-land="1"] .spine {
+  top: auto; right: 0; width: auto; height: calc(var(--spine) + 6px); border-radius: 0 0 var(--rs) var(--rs);
+  background: linear-gradient(180deg,
+    color-mix(in oklab, var(--fin-b) 75%, #000) 0, var(--fin-a) 30%, var(--fin-b) 48%, color-mix(in oklab, var(--fin-a) 65%, #fff) 66%, var(--fin-a) 82%, color-mix(in oklab, var(--fin-b) 70%, #000) 100%);
+}
+.device[data-frame="duo-fold"] .pcam {
+  display: block; position: absolute; z-index: 4; top: 11px; right: 15px; left: auto; width: 14px; height: 14px; margin: 0; border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #24304a, #000 62%); box-shadow: 0 0 0 1.5px rgba(0, 0, 0, .35);
+}
+.device[data-frame="duo-fold"][data-land="1"] .pcam { top: 15px; left: 11px; right: auto; }
+
+/* top button (both states) */
+.device:is([data-frame="duo"], [data-frame="duo-fold"]) .hw-4 {
+  display: block; position: absolute; top: -3px; right: 14%; width: 11%; height: 4px; border-radius: 2px;
+  background: linear-gradient(180deg, var(--fin-a), var(--fin-b));
+}
+.device:is([data-frame="duo"], [data-frame="duo-fold"])[data-land="1"] .hw-4 { top: 14%; right: auto; left: -3px; width: 4px; height: 11%; background: linear-gradient(90deg, var(--fin-b), var(--fin-a)); }
+
 /* frameless mode */
 .device[data-chrome="0"] .body { background: none; box-shadow: none !important; }
 .device[data-chrome="0"] .glass { display: none; }
 .device[data-chrome="0"] .screen { box-shadow: 0 0 0 1px var(--line-2), 0 40px 80px -28px rgba(0, 0, 0, .55); overflow: hidden; }
-.device[data-chrome="0"] :is(.hw, .strap, .stand, .foot, .base, .lcam, .speaker, .homebtn) { display: none !important; }
+.device[data-chrome="0"] :is(.hw, .strap, .stand, .foot, .base, .lcam, .speaker, .homebtn, .spine, .hinge) { display: none !important; }
+.device[data-chrome="0"][data-frame="duo-fold"] .screen { border-radius: var(--sr); }
 
 /* ---------- popovers ---------- */
 .pops { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
@@ -445,6 +502,10 @@ kbd { font: 500 11px/1 var(--mono); }
 .sil[data-f="notch"] i::before { content: ""; position: absolute; top: 0; left: 50%; width: 40%; height: 2.5px; transform: translateX(-50%); border-radius: 0 0 2px 2px; background: currentColor; }
 .sil:is([data-f="punch"], [data-f="fold"]) i::before { content: ""; position: absolute; top: 2.5px; left: 50%; width: 3px; height: 3px; transform: translateX(-50%); border-radius: 50%; background: currentColor; }
 .sil[data-f="fold"] i::after { content: ""; position: absolute; top: 2px; bottom: 2px; left: 50%; width: 0; border-left: 1px dashed currentColor; opacity: .5; }
+.sil[data-f="duo"] i { border-radius: 5px; }
+.sil[data-f="duo"] i::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 0; border-left: 1px solid currentColor; opacity: .45; }
+.sil[data-f="duo-fold"] i { border-radius: 2px 7px 7px 2px; border-left-width: 3px; }
+.sil[data-f="duo-fold"] i::before { content: ""; position: absolute; top: 2.5px; right: 3px; width: 3px; height: 3px; border-radius: 50%; background: currentColor; }
 .sil[data-f="home"] i { border-radius: 4px; }
 .sil[data-f="home"] i::after { content: ""; position: absolute; bottom: 2px; left: 50%; width: 4px; height: 4px; transform: translateX(-50%); border-radius: 50%; border: 1px solid currentColor; }
 .sil[data-f="laptop"] i { border-radius: 3px 3px 0 0; }
